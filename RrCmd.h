@@ -39,5 +39,8 @@ namespace rrfw
         RR_CMD_U2 = 0x06, /* command for Motor Driver B */
         RR_CMD_U4 = 0x07, /* Ultra sonic (HSR-04 compatible )*/
     };
+
+    #define RR_FIRST_CMD RR_CMD_U1
+    #define RR_LAST_CMD  RR_CMD_U4
 }
 #endif
