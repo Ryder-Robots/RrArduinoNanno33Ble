@@ -15,47 +15,52 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * =====================================================================
- * 
- * This class is expected to run in the ISR call of the chip, It's constructor 
- * will have a list of supported commands given to it and the class will 
+ *
+ * This class is expected to run in the ISR call of the chip, It's constructor
+ * will have a list of supported commands given to it and the class will
  * be called each time there is data avialable on the bus it is listening to.
  */
 
-
 #include "RrIsr.h"
-namespace rrfw {
+
+#include <Arduino.h>
+#define DEVC_REMOVE Serial
+
+namespace rrfw
+{
 
     // Life becomes a lot easier once our data is deserialized,  because we can
-    // operate on the object rather than the raw data, or in the case of I2C the 
+    // operate on the object rather than the raw data, or in the case of I2C the
     // data slightly deserialized and returned by SMB.
-    const RrOpStorage Isr::deserialize(const uint8_t* ingres, size_t sz)
+    const RrOpStorage Isr::deserialize(const uint8_t *ingres, size_t sz)
     {
-        // first compute the size of the of the inbound object
-        size_t csz =  sizeof(ingres) / sizeof(ingres[0]);
-        uint8_t data[] = {};
-        uint8_t default_sz = 0;
-
-        // verify that the size matches the contents getting sent.
-        if (sz != (csz - 2)) {
-            // throw an error at this point.
-            return RrOpStorage(RR_IO_RES_BAD_RQ, default_sz, data);
-        }
 
         RR_CMD default_cmd = RR_IO_RES_BAD_RQ;
-        for (uint8_t c = RR_FIRST_CMD; c != RR_LAST_CMD; c++) {
-            if (c == ingres[0]) {
+        uint8_t default_sz = 2;
+        // verify that the size matches the contents getting sent.
+        if (sz < 2 || sizeof(ingres) < 2)
+        {
+            // throw an error at this point.
+            return RrOpStorage(default_cmd, default_sz, {});
+        }
+        default_sz = ingres[1];
+        uint8_t data[ingres[1]] = {};
+        for (uint8_t c = RR_FIRST_CMD; c != RR_LAST_CMD; c++)
+        {
+            if (c == ingres[0])
+            {
                 default_cmd = static_cast<RR_CMD>(c);
                 break;
             }
         }
-        uint8_t *ndata = data;
-        if (default_cmd != RR_IO_RES_BAD_RQ) {
-            default_sz = ingres[1];
-            ndata = (uint8_t*)malloc(default_sz);
+
+        if (default_cmd == RR_IO_RES_BAD_RQ)
+        {
+            return RrOpStorage(default_cmd, 0, {});
         }
 
-        memcpy(ndata, ingres + sizeof(2), csz - 2);
-        return RrOpStorage(default_cmd, default_sz, ndata);
+        DEVC_REMOVE.println("leaving");
+        return RrOpStorage(default_cmd, default_sz, {});
     }
 
 }
