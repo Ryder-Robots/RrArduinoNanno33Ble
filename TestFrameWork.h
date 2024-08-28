@@ -5,6 +5,13 @@
 #include <string.h>
 
 namespace rrfwtest {
+    void assertEquals(u_int8_t exp, int act, u_int8_t msg)
+    {
+        Serial.print(msg + " :");
+        assert(exp == act);
+        Serial.println("ok");
+    }
+
     void assertEquals(int exp, int act, String msg)
     {
         Serial.print(msg + " :");
@@ -12,12 +19,10 @@ namespace rrfwtest {
         Serial.println("ok");
     }
 
-    void assertEquals(uint8_t *exp, uint8_t *act, String msg)
+    void assertEquals_uint8(uint8_t exp, uint8_t act, String msg)
     {
-        String s1 = (char *) exp;
-        String s2 = (char *) act;
         Serial.print(msg + " :");
-        assert(s1.compareTo(s2) == 0);
+        assert(exp == act);
         Serial.println("ok");
     }
 }

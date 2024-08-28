@@ -36,6 +36,7 @@ namespace rrfw {
 
         // deserilize bytes from an incomming request. And return the containerized image.
         const RrOpStorage deserialize(const uint8_t*, size_t);
+
     };
 }
 

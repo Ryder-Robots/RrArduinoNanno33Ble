@@ -44,7 +44,6 @@ namespace rrfw
             return RrOpStorage(default_cmd, default_sz, {});
         }
         default_sz = ingres[1];
-        uint8_t data[ingres[1]] = {};
         for (uint8_t c = RR_FIRST_CMD; c != RR_LAST_CMD; c++)
         {
             if (c == ingres[0])
@@ -59,8 +58,10 @@ namespace rrfw
             return RrOpStorage(default_cmd, 0, {});
         }
 
-        DEVC_REMOVE.println("leaving");
-        return RrOpStorage(default_cmd, default_sz, {});
+        uint8_t *data = (uint8_t*) calloc(default_sz, sizeof(u_int8_t));
+        memcpy(data, &ingres[2], default_sz+1);
+        RrOpStorage ret = RrOpStorage(default_cmd, default_sz, data);
+        return ret;
     }
 
 }
