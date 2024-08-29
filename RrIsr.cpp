@@ -32,6 +32,9 @@ namespace rrfw
     // Life becomes a lot easier once our data is deserialized,  because we can
     // operate on the object rather than the raw data, or in the case of I2C the
     // data slightly deserialized and returned by SMB.
+    /*!
+     * serialize byte array in I2C (SMB) format to a storage object for internal use.
+     */
     const RrOpStorage Isr::deserialize(const uint8_t *ingres, size_t sz)
     {
 
@@ -62,6 +65,26 @@ namespace rrfw
         memcpy(data, &ingres[2], default_sz+1);
         RrOpStorage ret = RrOpStorage(default_cmd, default_sz, data);
         return ret;
+    }
+
+
+    /*!
+     * Serialize storage value to byte array in I2C (SMB) format.
+     *
+     * @param req item to be serialized.
+     * @return serialized result
+     */
+    const uint8_t* Isr::serialize(const RrOpStorage req)
+    {
+        uint8_t *data = (uint8_t*) calloc(req._sz + 2, sizeof(u_int8_t));
+        data[0] = req._cmd;
+        data[1] = req._sz;
+
+        if (req._sz > 0) {
+            memcpy(&data[2], req._data, req._sz);
+        }
+
+        return data;
     }
 
 }
