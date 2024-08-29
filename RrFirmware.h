@@ -28,5 +28,6 @@
 #include "RrOpStorage.h"
 #include "OperationElementContainer.h"
 #include "Rrisr.h"
+#include "RrConfig.h"
 
 #endif

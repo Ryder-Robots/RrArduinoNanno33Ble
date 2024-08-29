@@ -16,30 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * =====================================================================
  * 
- * Base class fior actions that can be performed by chip.
+ * Contains elements so that IsrCtl() can execute an operation based on
+ * the comand the ID.  Each of these items should be placed into an
+ * array.
  */
 
-#ifndef TXRX_BASE_HPP
-#define TXRX_BASE_HPP
+#ifndef OPERATIONALELEMENTCONTAINER_H
+#define OPERATIONALELEMENTCONTAINER_H
 
-#include <stdint.h>
 #include "RrCmd.h"
-#include "RrOpStorage.h"
+#include "RrOpBase.h"
 
 namespace rrfw {
+    class OpElCnt {
 
-    class RrOpBase {
     public:
-        /*!
-         * by default returns success.
-         */
-        virtual const RrOpStorage execute(const RrOpStorage  bytes) 
-        { 
-            uint8_t data[]{};
-            return RrOpStorage(RR_IO_RES_UNSUPPORTED, 0, data);
-        }
+        OpElCnt(RR_CMD cmd,  RrOpBase *op):
+        _cmd_id{cmd},
+        _op{op}
+        {}
 
-        virtual ~RrOpBase() {}
+        RR_CMD   _cmd_id;
+        RrOpBase *_op;
     };
 }
 
