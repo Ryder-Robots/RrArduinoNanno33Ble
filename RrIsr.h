@@ -26,6 +26,7 @@
 
 #include <cstdlib>
 #include <string.h>
+#include <stdint.h>
 #include "RrOpStorage.h"
 #include "RrCmd.h"
 #include "RrIsr.h"

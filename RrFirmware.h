@@ -26,6 +26,7 @@
 #include "RrCmd.h"
 #include "RrOpBase.h"
 #include "RrOpStorage.h"
+#include "OperationElementContainer.h"
 #include "Rrisr.h"
 
 #endif
