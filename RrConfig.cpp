@@ -39,14 +39,16 @@ namespace rrfw
     {
         // Add together all the objects,  their sizes can vary so we get the
         // size as a total.
-        size_t sz = sizeof(RrOpBase) + sizeof(OpElCnt) + sizeof(RrOpGyroScope);
-
+        const size_t sz = sizeof(OpElCnt);
+        int support_cnt = 0;
+        _supported_op_count = RR_LAST_CMD - RR_FIRST_CMD + 1;
+        
         // This must reflect the count of all object in the array.
-        _supported_ops = reinterpret_cast<OpElCnt *>(calloc(1, sz));
-
+        _supported_ops = reinterpret_cast<OpElCnt *>(calloc(_supported_op_count, sz));
 
         // Create and add the objects
-        _supported_ops[0] = OpElCnt(RR_CMD_U1, new RrOpBase());
+        _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U1, new RrOpBase());
+        _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U2, new RrOpBase());
     
         //TODO: if IMU fails then set to failed.
         if(!IMU.begin()) {
@@ -54,9 +56,9 @@ namespace rrfw
         }
 
         RrOpBase* op = new RrOpGyroScope(IMU);
-        _supported_ops[1] = OpElCnt(RR_CMD_U5, op);
+        _supported_ops[support_cnt] = OpElCnt(RR_CMD_U5, op);
 
-        _supported_op_count = 2;
+       
     }
 
     /*
