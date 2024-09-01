@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * =====================================================================
  * 
- * Config,  this can be specific to a micro-processor,  and shoudl support only 
+ * Config,  this can be specific to a micro-processor,  and should support only 
  * operations which are allowed.
  * 
  * Note that outside of this header,  and the associated implementation, all calling
