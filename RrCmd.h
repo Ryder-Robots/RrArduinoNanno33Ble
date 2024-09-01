@@ -38,9 +38,10 @@ namespace rrfw
         RR_CMD_U1 = 0x05, /* command for Motor Driver A */
         RR_CMD_U2 = 0x06, /* command for Motor Driver B */
         RR_CMD_U4 = 0x07, /* Ultra sonic (HSR-04 compatible )*/
+        RR_CMD_U5 = 0x08, /* Gyroscope */
     };
 
     #define RR_FIRST_CMD RR_CMD_U1
-    #define RR_LAST_CMD  RR_CMD_U4
+    #define RR_LAST_CMD  RR_CMD_U5
 }
 #endif

@@ -16,19 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * =====================================================================
  * 
- * Main header file for RR Firmware library.
+ * Interface for gyroscop.
  */
 
-#ifndef RRFIRMWARE_H
-#define RRFIRMWARE_H
 
-#include <Arduino.h>
-#include "RrCmd.h"
 #include "RrOpBase.h"
-#include "RrOpStorage.h"
-#include "OperationElementContainer.h"
-#include "Rrisr.h"
-#include "RrConfig.h"
-#include "RrOpGyroScope.h"
+
+#ifndef RROPGYROSCOPE
+#define RROPGYROSCOPE
+
+#include <stdlib.h>
+#include "Arduino_BMI270_BMM150.h"
+
+namespace rrfw {
+    class RrOpGyroScope : public RrOpBase {
+    public:
+        RrOpGyroScope(BoschSensorClass imu):
+        _imu{imu} {}
+        
+        ~RrOpGyroScope();
+        const RrOpStorage execute(const RrOpStorage  bytes) override;
+
+    private:
+        BoschSensorClass _imu;
+    };
+}
 
 #endif

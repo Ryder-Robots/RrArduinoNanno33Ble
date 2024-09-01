@@ -15,55 +15,66 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * =====================================================================
- * 
- * Config,  this can be specific to a micro-processor,  and should support only 
+ *
+ * Config,  this can be specific to a micro-processor,  and should support only
  * operations which are allowed.
- * 
+ *
  * Note that outside of this header,  and the associated implementation, all calling
  * functions should be unaware of the concrete implementation of the drivers.
- * 
+ *
  * They should also have no knowledge of pin layout, and setup. With the exception
  * of items that need to generate data on a timer such as GPS.
  */
 
-
 #include "RrConfig.h"
+#include "Arduino_BMI270_BMM150.h"
 
-namespace rrfw {
+namespace rrfw
+{
 
     /*
-     * Reserve space for the storage objects, and create 
+     * Reserve space for the storage objects, and create
      */
-    RrConfig::RrConfig() {
-
-        // Add together all the objects,  their sizes can vary so we get the 
+    RrConfig::RrConfig()
+    {
+        // Add together all the objects,  their sizes can vary so we get the
         // size as a total.
-        size_t sz = sizeof(RrOpBase) + sizeof(OpElCnt);
-        
+        size_t sz = sizeof(RrOpBase) + sizeof(OpElCnt) + sizeof(RrOpGyroScope);
+
         // This must reflect the count of all object in the array.
-        _supported_op_count = 1;
+        _supported_op_count = 2;
+        _supported_ops = reinterpret_cast<OpElCnt *>(calloc(1, sz));
 
-
-        _supported_ops = (OpElCnt *) calloc(1, sz);
 
         // Create and add the objects
         _supported_ops[0] = OpElCnt(RR_CMD_U1, new RrOpBase());
+    
+        //TODO: if IMU fails then set to failed.
+        if(!IMU.begin()) {
+            Serial.println("Failed to initlize IMU!");
+        }
+
+        RrOpBase* op = new RrOpGyroScope(IMU);
+        _supported_ops[1] = OpElCnt(RR_CMD_U5, op);
     }
 
     /*
      * Release the memory
      */
-    RrConfig::~RrConfig() {
+    RrConfig::~RrConfig()
+    {
     }
 
     /***************************************
      * Return the supported operations.
      */
-    OpElCnt* RrConfig::get_supported_ops() {
+    OpElCnt *RrConfig::get_supported_ops()
+    {
         return _supported_ops;
     }
 
-    uint8_t RrConfig::get_supported_ops_count() {
+    uint8_t RrConfig::get_supported_ops_count()
+    {
         return _supported_op_count;
     }
 
@@ -74,22 +85,25 @@ namespace rrfw {
      * just use a bubble search here, while bsearch is more efficient, the sorting algorithm
      * will make it the same time, and avoid errors by not trying to sort it ourselves.
      */
-    OpElCnt* RrConfig::get_op(const RR_CMD cmd) {
+    OpElCnt *RrConfig::get_op(const RR_CMD cmd)
+    {
         OpElCnt *el;
         bool found = false;
-        for (int i = 0; i < _supported_op_count; i++) {
-            if (_supported_ops[i]._cmd_id == cmd) {
+        for (int i = 0; i < _supported_op_count; i++)
+        {
+            if (_supported_ops[i]._cmd_id == cmd)
+            {
                 found = true;
                 el = &_supported_ops[i];
                 break;
             }
         }
 
-        if (!found) {
-            el = new OpElCnt(RR_CMD_U1, new RrOpBase()); 
+        if (!found)
+        {
+            el = new OpElCnt(RR_CMD_U1, new RrOpBase());
         }
 
         return el;
     }
 }
-
