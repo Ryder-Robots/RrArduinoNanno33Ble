@@ -40,7 +40,7 @@ namespace rrfw {
             res[0] = _imu.gyroscopeSampleRate();
             if (_imu.gyroscopeAvailable()) {
                 Serial.println("reading gyroscope");
-                _imu.readGyroscope(res[1], res[2], res[2]);
+                _imu.readGyroscope(res[1], res[2], res[3]);
             } else {
                 Serial.println("failed to read gyroscope");
             }
