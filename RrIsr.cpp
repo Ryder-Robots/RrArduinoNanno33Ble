@@ -58,7 +58,7 @@ namespace rrfw
             return RrOpStorage(default_cmd, 0, {});
         }
 
-        uint8_t *data = (uint8_t*) calloc(default_sz, sizeof(uint8_t));
+        uint8_t *data = reinterpret_cast<uint8_t*>(calloc(default_sz, sizeof(uint8_t)));
         memcpy(data, &ingres[2], default_sz+1);
         RrOpStorage ret = RrOpStorage(default_cmd, default_sz, data);
         return ret;
@@ -73,7 +73,7 @@ namespace rrfw
      */
     const uint8_t* Isr::serialize(const RrOpStorage req)
     {
-        uint8_t *data = (uint8_t*) calloc(req._sz + 2, sizeof(uint8_t));
+        uint8_t *data = reinterpret_cast<uint8_t*>(calloc(req._sz + 2, sizeof(uint8_t)));
         data[0] = req._cmd;
         data[1] = req._sz;
 

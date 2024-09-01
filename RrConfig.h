@@ -29,31 +29,33 @@
 #ifndef RRCONFIG_H
 #define RRCONFIG_H
 
+#include <stdint.h>
 #include <string.h>
-// #include "OperationElementContainer.h"
+#include <stdlib.h>
+#include "OperationElementContainer.h"
 // #include "RrCmd.h"
 
 namespace rrfw {
     class RrConfig {
-    //     public:
-    //         RrConfig();
-    //         ~RrConfig();
+        public:
+            RrConfig();
+            ~RrConfig();
         
-    //         OpElCnt* get_supported_ops();
-    //         uint8_t get_supported_ops_count();
+            OpElCnt*  get_supported_ops();
+            uint8_t   get_supported_ops_count();
 
-    //         // This method can be called at startup,  
-    //         // periodically have its data updated, like a GPS.
-    //         //
-    //         // A static_cast must be applied to the return operational reference,
-    //         // so that it references correct functionality.
-    //         OpElCnt* get_op(RR_CMD cmd);
+            // This method can be called at startup,  
+            // periodically have its data updated, like a GPS.
+            //
+            // A static_cast must be applied to the return operational reference,
+            // so that it references correct functionality.
+            OpElCnt*  get_op(const RR_CMD cmd);
 
-    //     // Extend onto private routine any specific configuration items,
-    //     // such as PINs etc.
-    //     private:
-    //         OpElCnt* _supported_ops;
-    //         uint8_t  _supported_op_count;
+        // Extend onto private routine any specific configuration items,
+        // such as PINs etc.
+         private:
+            OpElCnt*   _supported_ops;
+            uint8_t   _supported_op_count;
     };
 }
 

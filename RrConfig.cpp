@@ -29,71 +29,67 @@
 
 #include "RrConfig.h"
 
-// namespace rrfw {
+namespace rrfw {
 
-//     /*
-//      * Reserve space for the storage objects, and create 
-//      */
-//     RrConfig::RrConfig() {
+    /*
+     * Reserve space for the storage objects, and create 
+     */
+    RrConfig::RrConfig() {
 
-//         // Add together all the objects,  their sizes can vary so we get the 
-//         // size as a total.
-//         size_t sz = sizeof(RrOpBase) + sizeof(OpElCnt);
+        // Add together all the objects,  their sizes can vary so we get the 
+        // size as a total.
+        size_t sz = sizeof(RrOpBase) + sizeof(OpElCnt);
         
-//         // This must reflect the count of all object in the array.
-//         _supported_op_count = 1;
+        // This must reflect the count of all object in the array.
+        _supported_op_count = 1;
 
 
-//         _supported_ops = (RrOpStorage *) calloc(1, sz);
+        _supported_ops = (OpElCnt *) calloc(1, sz);
 
-//         // Create and add the objects
-//         _supported_ops[0] = new OpElCnt(RR_CMD_U1, new RrOpBase());
-//     }
+        // Create and add the objects
+        _supported_ops[0] = OpElCnt(RR_CMD_U1, new RrOpBase());
+    }
 
-//     /*
-//      * Release the memory
-//      */
-//     RrConfig::~RrConfig() {
-//         for (int i = 0; i < _supported_op_count; i++) {
-//             delete(_supported_ops[i]);
-//         }
-//     }
+    /*
+     * Release the memory
+     */
+    RrConfig::~RrConfig() {
+    }
 
-//     /***************************************
-//      * Return the supported operations.
-//      */
-//     OpElCnt* RrConfig::get_supported_ops() {
-//         return _supported_ops;
-//     }
+    /***************************************
+     * Return the supported operations.
+     */
+    OpElCnt* RrConfig::get_supported_ops() {
+        return _supported_ops;
+    }
 
-//     uint8_t RrConfig::get_supported_ops_count() {
-//         return _supported_op_count;
-//     }
+    uint8_t RrConfig::get_supported_ops_count() {
+        return _supported_op_count;
+    }
 
-//     /*!
-//      * Return supportred op based on command.
-//      */
-//     /*
-//      * just use a bubble search here, while bsearch is more efficient, the sorting algorithm
-//      * will make it the same time, and avoid errors by not trying to sort it ourselves.
-//      */
-//     OpElCnt* RrConfig::get_op(RR_CMD cmd) {
-//         OpElCnt* el;
-//         bool found = false;
-//         for (int i = 0; i < _supported_op_count) {
-//             if (_supported_ops[i]->_cmd == cmd) {
-//                 found = true;
-//                 el = _supported_ops_count[i];
-//                 break;
-//             }
-//         }
+    /*!
+     * Return supportred op based on command.
+     */
+    /*
+     * just use a bubble search here, while bsearch is more efficient, the sorting algorithm
+     * will make it the same time, and avoid errors by not trying to sort it ourselves.
+     */
+    OpElCnt* RrConfig::get_op(const RR_CMD cmd) {
+        OpElCnt *el;
+        bool found = false;
+        for (int i = 0; i < _supported_op_count; i++) {
+            if (_supported_ops[i]._cmd_id == cmd) {
+                found = true;
+                el = &_supported_ops[i];
+                break;
+            }
+        }
 
-//         if (!found) {
-//             el = (RrOpStorage *) calloc(1, sizeof(RrOpBase) + sizeof(OpElCnt));
-//             el = new OpElCnt(RR_CMD_U1, new RrOpBase()); 
-//         }
+        if (!found) {
+            el = new OpElCnt(RR_CMD_U1, new RrOpBase()); 
+        }
 
-//         return el;
-//     }
-// }
+        return el;
+    }
+}
 
