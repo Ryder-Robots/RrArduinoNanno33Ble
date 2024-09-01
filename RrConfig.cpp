@@ -42,7 +42,6 @@ namespace rrfw
         size_t sz = sizeof(RrOpBase) + sizeof(OpElCnt) + sizeof(RrOpGyroScope);
 
         // This must reflect the count of all object in the array.
-        _supported_op_count = 2;
         _supported_ops = reinterpret_cast<OpElCnt *>(calloc(1, sz));
 
 
@@ -56,6 +55,8 @@ namespace rrfw
 
         RrOpBase* op = new RrOpGyroScope(IMU);
         _supported_ops[1] = OpElCnt(RR_CMD_U5, op);
+
+        _supported_op_count = 2;
     }
 
     /*
