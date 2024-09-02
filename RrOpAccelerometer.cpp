@@ -22,20 +22,15 @@
 #include "RrOpAccelerometer.h"
 
 namespace rrfw {
-        const RrOpStorage RrOpAccelerometer::execute(const RrOpStorage  bytes) {
-            bytes._data;
-            float *res = reinterpret_cast<float *>(calloc(4, sizeof(float)));
-            res[0] = _imu.accelerationSampleRate();
-            if (_imu.accelerationAvailable()) {
-                _imu.readAcceleration(res[1], res[2], res[3]);
-            } else {
-                // TODO: return failed message.
-                Serial.println("failed to read gyroscope");
-            }
+    int RrOpAccelerometer::available() {
+        return _imu.accelerationAvailable();
+    }
 
-            uint8_t *data = reinterpret_cast<uint8_t *>(res);
-            size_t sz = (4 * sizeof(float));
+    float  RrOpAccelerometer::sampleRate() {
+        return _imu.accelerationSampleRate();
+    }
 
-            return RrOpStorage(RR_IO_RES_OK, sz, data);
-        }
+    int RrOpAccelerometer::read(float& x, float& y, float& z) {
+        return _imu.readAcceleration(_res[1], _res[2], _res[3]);
+    }
 }

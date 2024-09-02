@@ -22,18 +22,17 @@
 #ifndef RROPACCELEROMETER_H
 #define RROPACCELEROMETER_H
 
-#include <stdlib.h>
-#include "Arduino_BMI270_BMM150.h"
-#include "RrOpBase.h"
+#include "ImuBase.h"
 
 namespace rrfw {
-    class RrOpAccelerometer : public RrOpBase {
+    class RrOpAccelerometer : public ImuBase {
         public:
-            RrOpAccelerometer(BoschSensorClass imu): _imu{imu} {}
+            RrOpAccelerometer(BoschSensorClass imu) : ImuBase(imu) {}
             ~RrOpAccelerometer() {}
-            const RrOpStorage execute(const RrOpStorage  bytes) override;
-        private:
-            BoschSensorClass _imu;
+            
+            int    available()  override;  // Number of samples in the FIFO.
+            float  sampleRate()  override; // Sampling rate of the sensor.
+            int read(float& x, float& y, float& z)  override;
     };
 }
 
