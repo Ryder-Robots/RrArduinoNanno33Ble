@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * =====================================================================
- * 
+ *
  * Interface for Accelerometer
  */
 
@@ -24,15 +24,32 @@
 
 #include "ImuBase.h"
 
-namespace rrfw {
-    class RrOpAccelerometer : public ImuBase {
-        public:
-            RrOpAccelerometer(BoschSensorClass imu) : ImuBase(imu) {}
-            ~RrOpAccelerometer() {}
-            
-            int    available()  override;  // Number of samples in the FIFO.
-            float  sampleRate()  override; // Sampling rate of the sensor.
-            int read(float& x, float& y, float& z)  override;
+namespace rrfw
+{
+    class RrOpAccelerometer : public ImuBase
+    {
+    public:
+        RrOpAccelerometer(BoschSensorClass imu) : ImuBase(imu) {}
+        
+        ~RrOpAccelerometer() {}
+
+        // Number of samples in the FIFO.
+        int available() override
+        {
+            return _imu.accelerationAvailable();
+        }
+
+        // Sampling rate of the sensor.
+        float sampleRate() override
+        {
+            return _imu.accelerationSampleRate();
+        }
+
+        // get values from sesnor
+        int read(float &x, float &y, float &z) override
+        {
+            return _imu.readAcceleration(x, y, z);
+        }
     };
 }
 

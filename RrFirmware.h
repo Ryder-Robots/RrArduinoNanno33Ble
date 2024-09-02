@@ -31,5 +31,6 @@
 #include "RrConfig.h"
 #include "RrOpGyroScope.h"
 #include "RrOpAccelerometer.h"
+#include "RrMagnetoMeter.h"
 
 #endif

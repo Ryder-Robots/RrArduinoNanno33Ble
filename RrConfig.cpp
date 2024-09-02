@@ -58,6 +58,9 @@ namespace rrfw
         RrOpBase* op = new RrOpGyroScope(IMU);
         _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U5, op);
 
+        RrOpBase* mm = new RrMagnetoMeter(IMU);
+         _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U7, mm);
+
         RrOpBase* ac = new RrOpAccelerometer(IMU);
         _supported_ops[support_cnt] = OpElCnt(RR_CMD_U6, ac);
        

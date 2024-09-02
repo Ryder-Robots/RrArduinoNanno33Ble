@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * =====================================================================
- * 
+ *
  * Interface for gyroscop.
  */
 
@@ -24,14 +24,32 @@
 
 #include "ImuBase.h"
 
-namespace rrfw {
-    class RrOpGyroScope : public ImuBase {
+namespace rrfw
+{
+    class RrOpGyroScope : public ImuBase
+    {
     public:
         RrOpGyroScope(BoschSensorClass imu) : ImuBase(imu) {}
+        
         ~RrOpGyroScope() {}
-        int    available()  override;  // Number of samples in the FIFO.
-        float  sampleRate()  override; // Sampling rate of the sensor.
-        int read(float& x, float& y, float& z)  override;
+
+        // Number of samples in the FIFO.
+        int available() override
+        {
+            return _imu.gyroscopeAvailable();
+        }
+
+        // Sampling rate of the sensor.
+        float sampleRate() override
+        {
+            return _imu.gyroscopeSampleRate();
+        }
+
+        // read from sensor
+        int read(float &x, float &y, float &z) override
+        {
+            return _imu.readGyroscope(x, y, z);
+        }
     };
 }
 

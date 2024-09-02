@@ -36,6 +36,7 @@
 #include "OperationElementContainer.h"
 #include "RrOpGyroScope.h"
 #include "RrOpAccelerometer.h"
+#include "RrMagnetoMeter.h"
 
 namespace rrfw {
     class RrConfig {

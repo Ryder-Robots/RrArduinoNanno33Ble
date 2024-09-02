@@ -39,6 +39,7 @@ namespace rrfw
         RR_CMD_U2 = 0x06, /* command for Motor Driver B */
         RR_CMD_U5 = 0x07, /* Gyroscope */
         RR_CMD_U6 = 0x08, /* Accelometer  */
+        RR_CMD_U7 = 0x09, /* Magnometer */
     };
 
     #define RR_FIRST_CMD RR_CMD_U1
