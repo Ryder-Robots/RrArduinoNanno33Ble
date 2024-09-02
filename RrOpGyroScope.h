@@ -22,19 +22,16 @@
 #ifndef RROPGYROSCOPE
 #define RROPGYROSCOPE
 
-#include <stdlib.h>
-#include "Arduino_BMI270_BMM150.h"
-#include "RrOpBase.h"
+#include "ImuBase.h"
 
 namespace rrfw {
-    class RrOpGyroScope : public RrOpBase {
+    class RrOpGyroScope : public ImuBase {
     public:
-        RrOpGyroScope(BoschSensorClass imu): _imu{imu} {}
+        RrOpGyroScope(BoschSensorClass imu) : ImuBase(imu) {}
         ~RrOpGyroScope() {}
-        const RrOpStorage execute(const RrOpStorage  bytes) override;
-
-    private:
-        BoschSensorClass _imu;
+        int    available()  override;  // Number of samples in the FIFO.
+        float  sampleRate()  override; // Sampling rate of the sensor.
+        int read(float& x, float& y, float& z)  override;
     };
 }
 

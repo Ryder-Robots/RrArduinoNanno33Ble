@@ -22,28 +22,16 @@
 #include <RrOpGyroScope.h>
 
 namespace rrfw {
-        /*!
-         * sample rate
-         * x variable
-         * y variable
-         * z variable
-         * 
-         * Gyroscope in degrees/second 
-         */
-        const RrOpStorage RrOpGyroScope::execute(const RrOpStorage  bytes) {
-            bytes._data;
-            float *res = reinterpret_cast<float *>(calloc(4, sizeof(float)));
-            res[0] = _imu.gyroscopeSampleRate();
-            if (_imu.gyroscopeAvailable()) {
-                Serial.println("reading gyroscope");
-                _imu.readGyroscope(res[1], res[2], res[3]);
-            } else {
-                Serial.println("failed to read gyroscope");
-            }
 
-            uint8_t *data = reinterpret_cast<uint8_t *>(res);
-            size_t sz = (4 * sizeof(float));
+    int RrOpGyroScope::available() {
+        return _imu.gyroscopeAvailable();
+    }
 
-            return RrOpStorage(RR_IO_RES_OK, sz, data);
-        }
+    float  RrOpGyroScope::sampleRate() {
+        return _imu.gyroscopeSampleRate();
+    }
+
+    int RrOpGyroScope::read(float& x, float& y, float& z) {
+        return _imu.readGyroscope(x, y, z);
+    }
 }

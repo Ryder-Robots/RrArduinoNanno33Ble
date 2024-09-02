@@ -31,6 +31,6 @@ namespace rrfw {
     }
 
     int RrOpAccelerometer::read(float& x, float& y, float& z) {
-        return _imu.readAcceleration(_res[1], _res[2], _res[3]);
+        return _imu.readAcceleration(x, y, z);
     }
 }
