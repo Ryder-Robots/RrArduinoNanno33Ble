@@ -16,20 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * =====================================================================
  * 
- * Main header file for RR Firmware library.
+ * Interface for Accelerometer
  */
 
-#ifndef RRFIRMWARE_H
-#define RRFIRMWARE_H
-
-#include <Arduino.h>
-#include "RrCmd.h"
-#include "RrOpBase.h"
-#include "RrOpStorage.h"
-#include "OperationElementContainer.h"
-#include "Rrisr.h"
-#include "RrConfig.h"
-#include "RrOpGyroScope.h"
 #include "RrOpAccelerometer.h"
 
-#endif
+namespace rrfw {
+        const RrOpStorage RrOpAccelerometer::execute(const RrOpStorage  bytes) {
+            bytes._data;
+            float *res = reinterpret_cast<float *>(calloc(4, sizeof(float)));
+            res[0] = _imu.accelerationSampleRate();
+            if (_imu.accelerationAvailable()) {
+                _imu.readAcceleration(res[1], res[2], res[3]);
+            } else {
+                // TODO: return failed message.
+                Serial.println("failed to read gyroscope");
+            }
+
+            uint8_t *data = reinterpret_cast<uint8_t *>(res);
+            size_t sz = (4 * sizeof(float));
+
+            return RrOpStorage(RR_IO_RES_OK, sz, data);
+        }
+}

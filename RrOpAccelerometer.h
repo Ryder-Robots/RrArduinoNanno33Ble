@@ -16,20 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * =====================================================================
  * 
- * Main header file for RR Firmware library.
+ * Interface for Accelerometer
  */
 
-#ifndef RRFIRMWARE_H
-#define RRFIRMWARE_H
+#ifndef RROPACCELEROMETER_H
+#define RROPACCELEROMETER_H
 
-#include <Arduino.h>
-#include "RrCmd.h"
+#include <stdlib.h>
+#include "Arduino_BMI270_BMM150.h"
 #include "RrOpBase.h"
-#include "RrOpStorage.h"
-#include "OperationElementContainer.h"
-#include "Rrisr.h"
-#include "RrConfig.h"
-#include "RrOpGyroScope.h"
-#include "RrOpAccelerometer.h"
+
+namespace rrfw {
+    class RrOpAccelerometer : public RrOpBase {
+        public:
+            RrOpAccelerometer(BoschSensorClass imu): _imu{imu} {}
+            ~RrOpAccelerometer() {}
+            const RrOpStorage execute(const RrOpStorage  bytes) override;
+        private:
+            BoschSensorClass _imu;
+    };
+}
 
 #endif

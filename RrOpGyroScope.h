@@ -19,22 +19,18 @@
  * Interface for gyroscop.
  */
 
-
-#include "RrOpBase.h"
-
 #ifndef RROPGYROSCOPE
 #define RROPGYROSCOPE
 
 #include <stdlib.h>
 #include "Arduino_BMI270_BMM150.h"
+#include "RrOpBase.h"
 
 namespace rrfw {
     class RrOpGyroScope : public RrOpBase {
     public:
-        RrOpGyroScope(BoschSensorClass imu):
-        _imu{imu} {}
-        
-        ~RrOpGyroScope();
+        RrOpGyroScope(BoschSensorClass imu): _imu{imu} {}
+        ~RrOpGyroScope() {}
         const RrOpStorage execute(const RrOpStorage  bytes) override;
 
     private:

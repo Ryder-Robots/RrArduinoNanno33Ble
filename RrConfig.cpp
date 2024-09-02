@@ -56,8 +56,10 @@ namespace rrfw
         }
 
         RrOpBase* op = new RrOpGyroScope(IMU);
-        _supported_ops[support_cnt] = OpElCnt(RR_CMD_U5, op);
+        _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U5, op);
 
+        RrOpBase* ac = new RrOpAccelerometer(IMU);
+        _supported_ops[support_cnt] = OpElCnt(RR_CMD_U6, ac);
        
     }
 

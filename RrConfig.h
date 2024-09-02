@@ -35,7 +35,7 @@
 #include "Arduino_BMI270_BMM150.h"
 #include "OperationElementContainer.h"
 #include "RrOpGyroScope.h"
-// #include "RrCmd.h"
+#include "RrOpAccelerometer.h"
 
 namespace rrfw {
     class RrConfig {

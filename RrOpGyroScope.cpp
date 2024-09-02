@@ -22,10 +22,6 @@
 #include <RrOpGyroScope.h>
 
 namespace rrfw {
-        RrOpGyroScope::~RrOpGyroScope() {
-
-        }
-
         /*!
          * sample rate
          * x variable
