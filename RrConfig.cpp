@@ -49,6 +49,9 @@ namespace rrfw
         // Create and add the objects
         _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U1, new RrOpBase());
         _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U2, new RrOpBase());
+
+        // I2C devices
+        _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U8, new RrUrm09(RR_U8));
     
         //TODO: if IMU fails then set to failed.
         if(!IMU.begin()) {

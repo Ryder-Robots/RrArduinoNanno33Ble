@@ -16,35 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * =====================================================================
  * 
- * Base class for IMU chip base.
+ * Header file for DF Robot URM09 ultrasonic sensor.
  * 
- * data returned as [sampleRate:float, x:float, y:float, z:float]
+ * data is [dist:float, temp: float]
  */
 
-#ifndef IMUBASE_H
-#define IMUBASE_H
+#ifndef RRURM09_H
+#define RRURM09_H
 
+#include "DFRobot_URM09.h"
 #include "RrOpBase.h"
-#include "Arduino_BMI270_BMM150.h"
 
 namespace rrfw {
+    class RrUrm09 : public RrOpBase {
+        public:
 
-    class ImuBase : public RrOpBase {
-    public:
-        ImuBase(BoschSensorClass imu): 
-            _imu{imu}, 
-            _res{reinterpret_cast<float *>(calloc(4, sizeof(float)))}
-        {}
+            // Uses reasonable defaults, so no need to set it in config class, except for address.
+            RrUrm09(uint8_t addr, uint8_t measureMode = MEASURE_MODE_AUTOMATIC, uint8_t measureRange = MEASURE_RANG_500);
+            
+            ~RrUrm09() {}
 
-        const RrOpStorage execute(const RrOpStorage  bytes) override;
-        virtual int    available() {}  // Number of samples in the FIFO.
-        virtual float  sampleRate() {} // Sampling rate of the sensor.
-        virtual int    read(float& x, float& y, float& z) {} // Results are in degrees/second.
+            const RrOpStorage execute(const RrOpStorage  bytes) override;
 
-    protected:
-        BoschSensorClass _imu;
-        float*           _res;
+        private:
+            // Keep each instance containerised, to avoid conflicts.
+            DFRobot_URM09 _urm = DFRobot_URM09();
+            uint8_t _addr;
+            uint8_t _measureMode;
+            uint8_t _measureRange;
+            float* _res;
     };
 }
 
-#endif
+#endif 
