@@ -67,13 +67,13 @@ namespace rrfw
             _res = NULL;
         }
 
-        RrOpBase *op = new RrOpGyroScope(IMU);
+        RrOpBase *op = new RrOpGyroScope(IMU, isr);
         _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U5, op);
 
-        RrOpBase *mm = new RrMagnetoMeter(IMU);
+        RrOpBase *mm = new RrMagnetoMeter(IMU, isr);
         _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U7, mm);
 
-        RrOpBase *ac = new RrOpAccelerometer(IMU);
+        RrOpBase *ac = new RrOpAccelerometer(IMU, isr);
         _supported_ops[support_cnt] = OpElCnt(RR_CMD_U6, ac);
 
         // send message back to Pi to let it know that IMU is now online.

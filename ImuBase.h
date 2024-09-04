@@ -25,6 +25,7 @@
 #define IMUBASE_H
 
 #include "RrOpBase.h"
+#include "RrIsr.h"
 #include "Arduino_BMI270_BMM150.h"
 
 namespace rrfw {
@@ -36,8 +37,9 @@ namespace rrfw {
          * @brief class constructor
          * @return class object
          */
-        ImuBase(BoschSensorClass imu): 
-            _imu{imu}, 
+        ImuBase(BoschSensorClass imu, Isr isr): 
+            _imu{imu},
+            _isr{isr},
             _res{reinterpret_cast<float *>(calloc(4, sizeof(float)))}
         {}
 
@@ -72,9 +74,11 @@ namespace rrfw {
          * @param z z verice on cartesian plane
          * @return Note that X, Y, and Z will be set (referenced).
          */
-        virtual int    read(float& x, float& y, float& z) {} 
+        virtual int    read(float& x, float& y, float& z) {}
+
         BoschSensorClass _imu; // IMY object
         float*           _res; // internal variable for results
+        Isr              _isr;
     };
 }
 
