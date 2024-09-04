@@ -38,19 +38,6 @@ namespace rrfw
     /*!
      * list of operations.
      */
-    // List of supported I2C addresses,  note that the I2C sensor will need to 
-    // have its address pre-programmed before some addreses will work.
-    enum RR_I2C : uint8_t 
-    {
-        RR_U8 = 0x11,
-        RR_U9 = 0x12,
-        RR_UA = 0x13,
-        RR_UB = 0x14,
-    };
-
-    /*!
-     * list of operations.
-     */
     enum RR_CMD : uint8_t
     {
         // Response codes.
