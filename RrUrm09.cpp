@@ -25,10 +25,11 @@
 
 namespace rrfw
 {
-    RrUrm09::RrUrm09(uint8_t addr, uint8_t cmd, uint8_t measureMode, uint8_t measureRange) : _addr{addr},
+    RrUrm09::RrUrm09(uint8_t addr, uint8_t cmd, Isr &isr, uint8_t measureMode, uint8_t measureRange) : _addr{addr},
                                                                                              _measureMode{measureMode},
                                                                                              _measureRange{measureRange},
-                                                                                             _res{reinterpret_cast<float *>(calloc(2, sizeof(float)))}
+                                                                                             _res{reinterpret_cast<float *>(calloc(2, sizeof(float)))},
+                                                                                             _isr{isr}
     {
         while (!_urm.begin(_addr))
         {
@@ -36,7 +37,7 @@ namespace rrfw
             _res[1] = 0;
             size_t sz = (2 * sizeof(float));
             RrOpStorage res = RrOpStorage(RR_IO_RES_NOTREADY, sz, reinterpret_cast<uint8_t *>(_res));
-            //TODO: Add in serializer.
+            _isr.transmit(res);
 
             // wait 10 Ms
             delay(10);
@@ -48,7 +49,7 @@ namespace rrfw
         _res[1] = 0;
         size_t sz = (2 * sizeof(float));
         RrOpStorage res = RrOpStorage(RR_IO_RES_READY, sz, reinterpret_cast<uint8_t *>(_res));
-        //TODO: Add in serializer.
+        _isr.transmit(res);
     }
 
     /*!

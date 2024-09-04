@@ -51,8 +51,8 @@ namespace rrfw
         _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U2, new RrOpBase());
 
         // I2C devices
-        _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U8, new RrUrm09(RR_U8, RR_CMD_U8));
-        _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U9, new RrUrm09(RR_U9, RR_CMD_U8));
+        _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U8, new RrUrm09(RR_U8, RR_CMD_U8, isr));
+        _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U9, new RrUrm09(RR_U9, RR_CMD_U8, isr));
 
         if (!IMU.begin())
         {

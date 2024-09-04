@@ -33,7 +33,7 @@ namespace rrfw {
         public:
 
             // Uses reasonable defaults, so no need to set it in config class, except for address.
-            RrUrm09(uint8_t addr, uint8_t cmd, uint8_t measureMode = MEASURE_MODE_AUTOMATIC, uint8_t measureRange = MEASURE_RANG_500);
+            RrUrm09(uint8_t addr, uint8_t cmd, Isr &isr, uint8_t measureMode = MEASURE_MODE_AUTOMATIC, uint8_t measureRange = MEASURE_RANG_500);
             
             ~RrUrm09() {}
 
@@ -48,6 +48,7 @@ namespace rrfw {
             uint8_t _measureMode;
             uint8_t _measureRange;
             float* _res;
+            Isr    _isr;
     };
 }
 

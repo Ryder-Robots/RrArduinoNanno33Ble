@@ -37,6 +37,7 @@ void loop()
       const rrfw::OpElCnt *op = conf.get_op(static_cast<rrfw::RR_CMD>(req._cmd));
 
       const rrfw::RrOpStorage res = op->_op->execute(req);
+      isr.transmit(res);
       Serial.println("finish executing ultrasonic");
       float *data_res = reinterpret_cast<float *>(res._data);
 
