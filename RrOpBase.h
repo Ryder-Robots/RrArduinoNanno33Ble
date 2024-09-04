@@ -31,12 +31,24 @@ namespace rrfw {
     class RrOpBase {
     public:
         /*!
-         * by default returns success.
+         * @fn execute
+         * @brief performs execute on the sensor, should be performed once available returns true.
+         * @return Storage class that contains data defined in sesnsors driver, otherwise RR_IO_RES_UNSUPORTED
          */
         virtual const RrOpStorage execute(const RrOpStorage  bytes) 
         { 
             uint8_t data[]{};
             return RrOpStorage(RR_IO_RES_UNSUPPORTED, 0, data);
+        }
+
+        /*!
+         * @fn avialable
+         * @brief returns true when sensor becomes available.
+         * @return sensor implementation specific,  but usually bytes available.
+         */
+        virtual int available()
+        {
+            return 0;
         }
 
         virtual ~RrOpBase() {}

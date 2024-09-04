@@ -33,6 +33,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "Arduino_BMI270_BMM150.h"
+#include "RrIsr.h"
 #include "OperationElementContainer.h"
 #include "RrOpGyroScope.h"
 #include "RrOpAccelerometer.h"
@@ -42,10 +43,36 @@
 namespace rrfw {
     class RrConfig {
         public:
-            RrConfig();
+            /*!
+             * class constructor
+             */
+            RrConfig() {}
+
+            /*!
+             * @fn ~RrConfig
+             * @brief deconstructor.
+             */
             ~RrConfig();
+
+            /*!
+             * @fn begin
+             * @brief perform any initlization that is required.
+             * @param ISR object.
+             */
+            void begin(Isr &isr);
         
+            /*!
+             * @fn get_supported_ops()
+             * @brief lists all supported operations.
+             * @return supported operations
+             */
             OpElCnt*  get_supported_ops();
+
+            /*!
+             * @fn get_supported_ope_count()
+             * @brief returns count of supported operations
+             * @return supported operations count.
+             */
             uint8_t   get_supported_ops_count();
 
             // This method can be called at startup,  
@@ -53,6 +80,11 @@ namespace rrfw {
             //
             // A static_cast must be applied to the return operational reference,
             // so that it references correct functionality.
+            /*!
+             * @fn get_op
+             * @brief given a CMD (op command) return the operation class wrapper.
+             * @return operation object.
+             */
             OpElCnt*  get_op(const RR_CMD cmd);
 
         // Extend onto private routine any specific configuration items,
