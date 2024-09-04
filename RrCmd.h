@@ -53,11 +53,12 @@ namespace rrfw
         RR_CMD_U5 = 0x07, /* Gyroscope */
         RR_CMD_U6 = 0x08, /* Accelometer  */
         RR_CMD_U7 = 0x09, /* Magnometer */
-        RR_CMD_U8 = 0x0a, /* Ultra sonic forward sensor */
+        RR_CMD_U8 = 0x0a, /* Ultra sonic forward/bow sensor */
+        RR_CMD_U9 = 0x0b, /* Ultra sonic port side */
     };
 
     // Command level operations need to loop so this is included here for that purpose.
     #define RR_FIRST_CMD RR_CMD_U1
-    #define RR_LAST_CMD  RR_CMD_U8
+    #define RR_LAST_CMD  RR_CMD_U9
 }
 #endif
