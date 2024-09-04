@@ -45,7 +45,10 @@ namespace rrfw
         RR_IO_RES_TIMEOUT     = 0x01, /* timed out while waiting to recieve data */
         RR_IO_RES_ACTION_SENT = 0x02, /* Action was sent */
         RR_IO_RES_UNSUPPORTED = 0x03, /* An unsupported operation.*/
-        RR_IO_RES_BAD_RQ = 0x04,      /* Bad request was recieved */
+        RR_IO_RES_BAD_RQ      = 0x04, /* Bad request was recieved */
+        RR_IO_RES_NOTREADY    = 0x0e, /* Waiting for sensor to become available */
+        RR_IO_RES_READY       = 0x10, /* Ready status */
+        RR_IO_RES_FAILED      = 0x11,
 
         // Actions
         RR_CMD_U1 = 0x05, /* command for Motor Driver A */
@@ -55,11 +58,14 @@ namespace rrfw
         RR_CMD_U7 = 0x09, /* Magnometer */
         RR_CMD_U8 = 0x0a, /* Ultra sonic forward/bow sensor */
         RR_CMD_U9 = 0x0b, /* Ultra sonic port side */
+        RR_CMD_UA = 0x0c, /* Ultra sonic port starbord*/
+        RR_CMD_UB = 0x0d, /* Ultra sonic bottom */
+
     };
 
     // Command level operations need to loop so this is included here for that purpose.
     // Command level operations need to loop so this is included here for that purpose.
     #define RR_FIRST_CMD RR_CMD_U1
-    #define RR_LAST_CMD  RR_CMD_U9
+    #define RR_LAST_CMD  RR_CMD_UB
 }
 #endif

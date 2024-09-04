@@ -29,7 +29,7 @@ namespace rrfw
     class RrOpAccelerometer : public ImuBase
     {
     public:
-        RrOpAccelerometer(BoschSensorClass imu) : ImuBase(imu) {}
+        RrOpAccelerometer(BoschSensorClass imu, Isr isr) : ImuBase(imu, isr) {}
         
         ~RrOpAccelerometer() {}
 

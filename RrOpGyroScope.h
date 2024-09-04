@@ -29,7 +29,7 @@ namespace rrfw
     class RrOpGyroScope : public ImuBase
     {
     public:
-        RrOpGyroScope(BoschSensorClass imu) : ImuBase(imu) {}
+        RrOpGyroScope(BoschSensorClass imu, Isr isr) : ImuBase(imu, isr) {}
         
         ~RrOpGyroScope() {}
 

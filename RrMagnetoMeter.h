@@ -28,7 +28,7 @@ namespace rrfw
 {
     class RrMagnetoMeter : public ImuBase {
     public:
-        RrMagnetoMeter(BoschSensorClass imu) : ImuBase(imu) {}
+        RrMagnetoMeter(BoschSensorClass imu, Isr isr) : ImuBase(imu, isr) {}
         
         ~RrMagnetoMeter() {}
 

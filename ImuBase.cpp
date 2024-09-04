@@ -40,8 +40,13 @@ namespace rrfw
         }
         else
         {
-            // TODO: return failed message.
-            Serial.println("failed to read gyroscope");
+            uint8_t *data = reinterpret_cast<uint8_t *>(_res);
+            size_t sz = (4 * sizeof(float));
+            data[0] = RR_CMD_U5;
+            data[1] = 0;
+            data[2] = 0;
+            RrOpStorage op = RrOpStorage(RR_IO_RES_OK, sz, data);
+            _isr.transmit(op);
         }
 
         uint8_t *data = reinterpret_cast<uint8_t *>(_res);

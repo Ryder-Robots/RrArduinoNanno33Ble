@@ -26,17 +26,20 @@
 
 #include "DFRobot_URM09.h"
 #include "RrOpBase.h"
+#include "RrIsr.h"
 
 namespace rrfw {
     class RrUrm09 : public RrOpBase {
         public:
 
             // Uses reasonable defaults, so no need to set it in config class, except for address.
-            RrUrm09(uint8_t addr, uint8_t measureMode = MEASURE_MODE_AUTOMATIC, uint8_t measureRange = MEASURE_RANG_500);
+            RrUrm09(uint8_t addr, uint8_t cmd, Isr &isr, uint8_t measureMode = MEASURE_MODE_AUTOMATIC, uint8_t measureRange = MEASURE_RANG_500);
             
             ~RrUrm09() {}
 
             const RrOpStorage execute(const RrOpStorage  bytes) override;
+
+            int available() override;
 
         private:
             // Keep each instance containerised, to avoid conflicts.
@@ -45,6 +48,7 @@ namespace rrfw {
             uint8_t _measureMode;
             uint8_t _measureRange;
             float* _res;
+            Isr    _isr;
     };
 }
 
