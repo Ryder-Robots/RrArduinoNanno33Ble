@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * =====================================================================
- * 
+ *
  * Contains elements so that IsrCtl() can execute an operation based on
  * the comand the ID.  Each of these items should be placed into an
  * array.
@@ -28,17 +28,13 @@
 #include "RrOpBase.h"
 
 namespace rrfw {
-    class OpElCnt {
+class OpElCnt {
+   public:
+    OpElCnt(RR_CMD cmd, RrOpBase *op) : _cmd_id{cmd}, _op{op} {}
 
-    public:
-        OpElCnt(RR_CMD cmd,  RrOpBase *op):
-        _cmd_id{cmd},
-        _op{op}
-        {}
-
-        RR_CMD   _cmd_id;
-        RrOpBase *_op;
-    };
-}
+    RR_CMD _cmd_id;
+    RrOpBase *_op;
+};
+}  // namespace rrfw
 
 #endif

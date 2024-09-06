@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * =====================================================================
- * 
+ *
  * Main header file for RR Firmware library.
  */
 
@@ -23,15 +23,16 @@
 #define RRFIRMWARE_H
 
 #include <Arduino.h>
-#include "RrCmd.h"
-#include "RrOpBase.h"
-#include "RrOpStorage.h"
+
 #include "OperationElementContainer.h"
-#include "Rrisr.h"
+#include "RrCmd.h"
 #include "RrConfig.h"
-#include "RrOpGyroScope.h"
-#include "RrOpAccelerometer.h"
 #include "RrMagnetoMeter.h"
+#include "RrOpAccelerometer.h"
+#include "RrOpBase.h"
+#include "RrOpGyroScope.h"
+#include "RrOpStorage.h"
 #include "RrUrm09.h"
+#include "Rrisr.h"
 
 #endif

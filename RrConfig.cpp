@@ -27,111 +27,97 @@
  */
 
 #include "RrConfig.h"
+
 #include "Arduino_BMI270_BMM150.h"
 
-namespace rrfw
-{
+namespace rrfw {
 
-    /*
-     * Reserve space for the storage objects, and create
-     */
-    void RrConfig::begin(Isr &isr)
-    {
-        // Add together all the objects,  their sizes can vary so we get the
-        // size as a total.
-        const size_t sz = sizeof(OpElCnt);
-        int support_cnt = 0;
-        _supported_op_count = RR_LAST_CMD - RR_FIRST_CMD + 1;
+/*
+ * Reserve space for the storage objects, and create
+ */
+void RrConfig::begin(Isr &isr) {
+    // Add together all the objects,  their sizes can vary so we get the
+    // size as a total.
+    const size_t sz = sizeof(OpElCnt);
+    int support_cnt = 0;
+    _supported_op_count = RR_LAST_CMD - RR_FIRST_CMD + 1;
 
-        // This must reflect the count of all object in the array.
-        _supported_ops = reinterpret_cast<OpElCnt *>(calloc(_supported_op_count, sz));
+    // This must reflect the count of all object in the array.
+    _supported_ops = reinterpret_cast<OpElCnt *>(calloc(_supported_op_count, sz));
 
-        // Create and add the objects
-        _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U1, new RrOpBase());
-        _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U2, new RrOpBase());
+    // Create and add the objects
+    _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U1, new RrOpBase());
+    _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U2, new RrOpBase());
 
-        // I2C devices
-        _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U8, new RrUrm09(RR_U8, RR_CMD_U8, isr));
-        _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U9, new RrUrm09(RR_U9, RR_CMD_U8, isr));
+    // I2C devices
+    _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U8, new RrUrm09(RR_U8, RR_CMD_U8, isr));
+    _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U9, new RrUrm09(RR_U9, RR_CMD_U8, isr));
 
-        if (!IMU.begin())
-        {
-            // Use C5 to indicate something is wrong with the IMU, we won't know exactly what is broken
-            // but it is internal to the chip.
-            float *_res = reinterpret_cast<float *>(calloc(2, sizeof(float)));
-            _res[0] = static_cast<float>(RR_CMD_U5);
-            _res[1] = 0;
-            size_t rsz = (2 * sizeof(float));
-            const RrOpStorage res = RrOpStorage(RR_IO_RES_FAILED, rsz, reinterpret_cast<uint8_t *>(_res));
-            isr.transmit(res);
-            _res = NULL;
-        }
-
-        RrOpBase *op = new RrOpGyroScope(IMU, isr);
-        _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U5, op);
-
-        RrOpBase *mm = new RrMagnetoMeter(IMU, isr);
-        _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U7, mm);
-
-        RrOpBase *ac = new RrOpAccelerometer(IMU, isr);
-        _supported_ops[support_cnt] = OpElCnt(RR_CMD_U6, ac);
-
-        // send message back to Pi to let it know that IMU is now online.
+    if (!IMU.begin()) {
+        // Use C5 to indicate something is wrong with the IMU, we won't know exactly what is broken
+        // but it is internal to the chip.
         float *_res = reinterpret_cast<float *>(calloc(2, sizeof(float)));
         _res[0] = static_cast<float>(RR_CMD_U5);
         _res[1] = 0;
         size_t rsz = (2 * sizeof(float));
-        const RrOpStorage res = RrOpStorage(RR_IO_RES_READY, sz, reinterpret_cast<uint8_t *>(_res));
+        const RrOpStorage res = RrOpStorage(RR_IO_RES_FAILED, rsz, reinterpret_cast<uint8_t *>(_res));
         isr.transmit(res);
         _res = NULL;
     }
 
-    /*
-     * Release the memory
-     */
-    RrConfig::~RrConfig()
-    {
-    }
+    RrOpBase *op = new RrOpGyroScope(IMU, isr);
+    _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U5, op);
 
-    /***************************************
-     * Return the supported operations.
-     */
-    OpElCnt *RrConfig::get_supported_ops()
-    {
-        return _supported_ops;
-    }
+    RrOpBase *mm = new RrMagnetoMeter(IMU, isr);
+    _supported_ops[support_cnt++] = OpElCnt(RR_CMD_U7, mm);
 
-    uint8_t RrConfig::get_supported_ops_count()
-    {
-        return _supported_op_count;
-    }
+    RrOpBase *ac = new RrOpAccelerometer(IMU, isr);
+    _supported_ops[support_cnt] = OpElCnt(RR_CMD_U6, ac);
 
-    /*!
-     * Return supportred op based on command.
-     */
-    /*
-     * just use a bubble search here, while bsearch is more efficient, the sorting algorithm
-     * will make it the same time, and avoid errors by not trying to sort it ourselves.
-     */
-    OpElCnt *RrConfig::get_op(const RR_CMD cmd)
-    {
-        OpElCnt *el;
-        bool found = false;
-        for (int i = 0; i < _supported_op_count; i++)
-        {
-            if (_supported_ops[i]._cmd_id == cmd)
-            {
-                found = true;
-                el = &_supported_ops[i];
-                break;
-            }
-        }
-
-        if (!found)
-        {
-            el = new OpElCnt(RR_CMD_U1, new RrOpBase());
-        }
-
-        return el;
-    }
+    // send message back to Pi to let it know that IMU is now online.
+    float *_res = reinterpret_cast<float *>(calloc(2, sizeof(float)));
+    _res[0] = static_cast<float>(RR_CMD_U5);
+    _res[1] = 0;
+    size_t rsz = (2 * sizeof(float));
+    const RrOpStorage res = RrOpStorage(RR_IO_RES_READY, sz, reinterpret_cast<uint8_t *>(_res));
+    isr.transmit(res);
+    _res = NULL;
 }
+
+/*
+ * Release the memory
+ */
+RrConfig::~RrConfig() {}
+
+/***************************************
+ * Return the supported operations.
+ */
+OpElCnt *RrConfig::get_supported_ops() { return _supported_ops; }
+
+uint8_t RrConfig::get_supported_ops_count() { return _supported_op_count; }
+
+/*!
+ * Return supportred op based on command.
+ */
+/*
+ * just use a bubble search here, while bsearch is more efficient, the sorting algorithm
+ * will make it the same time, and avoid errors by not trying to sort it ourselves.
+ */
+OpElCnt *RrConfig::get_op(const RR_CMD cmd) {
+    OpElCnt *el;
+    bool found = false;
+    for (int i = 0; i < _supported_op_count; i++) {
+        if (_supported_ops[i]._cmd_id == cmd) {
+            found = true;
+            el = &_supported_ops[i];
+            break;
+        }
+    }
+
+    if (!found) {
+        el = new OpElCnt(RR_CMD_U1, new RrOpBase());
+    }
+
+    return el;
+}
+}  // namespace rrfw

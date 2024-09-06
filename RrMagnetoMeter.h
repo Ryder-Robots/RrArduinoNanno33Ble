@@ -19,37 +19,51 @@
  * Interface for magnretometer.  Gives compass points in three dimensions.
  */
 
-#ifndef RRMAGNETOMETER
-#define RRMAGNETOMETER
+#ifndef RRMAGNETOMETER_H
+#define RRMAGNETOMETER_H
 
 #include "ImuBase.h"
 
-namespace rrfw
-{
-    class RrMagnetoMeter : public ImuBase {
-    public:
-        RrMagnetoMeter(BoschSensorClass imu, Isr isr) : ImuBase(imu, isr) {}
-        
-        ~RrMagnetoMeter() {}
+namespace rrfw {
+class RrMagnetoMeter : public ImuBase {
+   public:
+    /*!
+     * @fn RrMagnetoMeter
+     * @brief class constructor
+     * @param imu EMBED IMU interface
+     * @param isr ISR interface
+     */
+    RrMagnetoMeter(BoschSensorClass imu, Isr isr) : ImuBase(imu, isr) {}
 
-        // Number of samples in the FIFO.
-        int available() override
-        {
-            return _imu.magneticFieldAvailable();
-        }
+    /*!
+     * @fn class deconstructor
+     */
+    ~RrMagnetoMeter() {}
 
-        // Sampling rate of the sensor.
-        float sampleRate() override
-        {
-            return _imu.magneticFieldSampleRate();
-        }
+    /*!
+     * @fn available()
+     * @brief Number of samples in the FIFO.
+     * @return number of samples in FIFO
+     */
+    int available() override { return _imu.magneticFieldAvailable(); }
 
-        // read from sensor
-        int read(float &x, float &y, float &z) override
-        {
-            return _imu.readMagneticField(x, y, z);
-        }
-    };
-}
+    /*!
+     * @fn sampleRate()
+     * @brief sampling rate in HZ for sensor
+     * @return sample rate
+     */
+    float sampleRate() override { return _imu.magneticFieldSampleRate(); }
 
-#endif
+    /*!
+     * @fn read
+     * @brief populate X, Y, and Z coordinate for currently dertected magnetic field.
+     * @param x float to populate for X coordinate
+     * @param y float to populate for Y coordinate
+     * @param z float to populate for Z coordinate
+     * @return 
+     */
+    int read(float &x, float &y, float &z) override { return _imu.readMagneticField(x, y, z); }
+};
+}  // namespace rrfw
+
+#endif //RRMAGNETOMETER_H

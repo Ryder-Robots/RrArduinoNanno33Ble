@@ -21,37 +21,32 @@
 
 #include "ImuBase.h"
 
-namespace rrfw
-{
-    /*!
-     * get data from sensor and reutrn it as a storage object.
-     *
-     * @param bytes inbound request deserialized.
-     */
-    const RrOpStorage ImuBase::execute(const RrOpStorage bytes)
-    {
-        _res[0] = sampleRate();
-        _res[1] = 0;
-        _res[2] = 0;
-        _res[3] = 0;
-        if (available())
-        {
-            read(_res[1], _res[2], _res[3]);
-        }
-        else
-        {
-            uint8_t *data = reinterpret_cast<uint8_t *>(_res);
-            size_t sz = (4 * sizeof(float));
-            data[0] = RR_CMD_U5;
-            data[1] = 0;
-            data[2] = 0;
-            RrOpStorage op = RrOpStorage(RR_IO_RES_OK, sz, data);
-            _isr.transmit(op);
-        }
-
+namespace rrfw {
+/*!
+ * get data from sensor and reutrn it as a storage object.
+ *
+ * @param bytes inbound request deserialized.
+ */
+const RrOpStorage ImuBase::execute(const RrOpStorage bytes) {
+    _res[0] = sampleRate();
+    _res[1] = 0;
+    _res[2] = 0;
+    _res[3] = 0;
+    if (available()) {
+        read(_res[1], _res[2], _res[3]);
+    } else {
         uint8_t *data = reinterpret_cast<uint8_t *>(_res);
         size_t sz = (4 * sizeof(float));
-
-        return RrOpStorage(RR_IO_RES_OK, sz, data);
+        data[0] = RR_CMD_U5;
+        data[1] = 0;
+        data[2] = 0;
+        RrOpStorage op = RrOpStorage(RR_IO_RES_OK, sz, data);
+        _isr.transmit(op);
     }
+
+    uint8_t *data = reinterpret_cast<uint8_t *>(_res);
+    size_t sz = (4 * sizeof(float));
+
+    return RrOpStorage(RR_IO_RES_OK, sz, data);
 }
+}  // namespace rrfw

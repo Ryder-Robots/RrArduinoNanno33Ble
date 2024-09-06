@@ -15,24 +15,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * =====================================================================
- * 
- * This class is expected to run in the ISR call of the chip, It's constructor 
- * will have a list of supported commands given to it and the class will 
+ *
+ * This class is expected to run in the ISR call of the chip, It's constructor
+ * will have a list of supported commands given to it and the class will
  * be called each time there is data avialable on the bus it is listening to.
  */
 
 #ifndef RRISR_H
 #define RRISR_H
 
-#include <cstdlib>
-#include <string.h>
-#include <stdint.h>
 #include <Arduino.h>
-#include "RrOpStorage.h"
+#include <stdint.h>
+#include <string.h>
+
+#include <cstdlib>
+
 #include "RrCmd.h"
 #include "RrIsr.h"
+#include "RrOpStorage.h"
 
-// By default SerialBUS will be set to SerialUSB,  but 
+// By default SerialBUS will be set to SerialUSB,  but
 #ifndef SERIAL_BUS
 #define SERIAL_BUS SerialUSB
 #endif
@@ -40,58 +42,55 @@
 #define BUFSZ 101
 #define MAX_SZ (BUFSZ - 1)
 
-
 namespace rrfw {
 
-    
-    class Isr {
-    public:
+class Isr {
+   public:
+    /*!
+     * @fn Isr
+     * @brief class constructor
+     */
+    Isr() {}
 
-        /*!
-         * @fn Isr
-         * @brief class constructor
-         */
-        Isr() {}
+    void begin(unsigned long boardRate);
 
-        void begin(unsigned long boardRate);
+    // deserilize bytes from an incomming request. And return the containerized image.
+    /*!
+     * @fn deseralize()
+     * @brief deserialize raw input from serial port, and return the deserialized object.
+     * @return Storage object
+     */
+    const RrOpStorage deserialize(const uint8_t*, size_t);
 
-        // deserilize bytes from an incomming request. And return the containerized image.
-        /*!
-         * @fn deseralize()
-         * @brief deserialize raw input from serial port, and return the deserialized object.
-         * @return Storage object
-         */
-        const RrOpStorage deserialize(const uint8_t*, size_t);
+    /*!
+     * @fn serialize
+     * @brief convert storage object to uint8_t array
+     * @return storage object.
+     */
+    const uint8_t* serialize(const RrOpStorage);
 
-        /*!
-         * @fn serialize
-         * @brief convert storage object to uint8_t array
-         * @return storage object.
-         */
-        const uint8_t* serialize(const RrOpStorage);
+    /*!
+     * @fn transmit
+     * @brief sends result to Serial bus that communicates with the Pi, Note that the serial object will
+     * have '\n' char appended to it, to inidcate a entire object.
+     */
+    void transmit(const RrOpStorage);
 
-        /*!
-         * @fn transmit
-         * @brief sends result to Serial bus that communicates with the Pi, Note that the serial object will
-         * have '\n' char appended to it, to inidcate a entire object.
-         */
-        void transmit(const RrOpStorage);
+    /*!
+     * @fn recieve()
+     * @brief recieves an inbound request. This function should only be called as part of the interrupt in INO sketch,
+     * and not directly.
+     *
+     * @param rx container for the result
+     * @return how many bytes where read in request.  Note that a result of 0 can also indicate
+     * an error which will be reflected in the rx.
+     */
+    const size_t recieve(RrOpStorage& rx);
 
-        /*!
-         * @fn recieve()
-         * @brief recieves an inbound request. This function should only be called as part of the interrupt in INO sketch,
-         * and not directly.
-         * 
-         * @param rx container for the result
-         * @return how many bytes where read in request.  Note that a result of 0 can also indicate
-         * an error which will be reflected in the rx.
-         */
-        const size_t recieve(RrOpStorage &rx);
-
-    private:
-        // Buffer for capturing datra.
-        uint8_t* _buf = reinterpret_cast<uint8_t *>(calloc(BUFSZ, sizeof(uint8_t)));
-    };
-}
+   private:
+    // Buffer for capturing datra.
+    uint8_t* _buf = reinterpret_cast<uint8_t*>(calloc(BUFSZ, sizeof(uint8_t)));
+};
+}  // namespace rrfw
 
 #endif
