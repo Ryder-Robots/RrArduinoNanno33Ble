@@ -1,72 +1,14 @@
-#include <Arduino.h>
+// https://docs.arduino.cc/tutorials/mkr-wifi-1010/mkr-jlink-setup/
+// Mock out the Serial class so we can attempt to figure out what is going wrong.
+#include "MockSerial.h"
 #include "RrFirmware.h"
 
-// https://docs.arduino.cc/tutorials/mkr-wifi-1010/mkr-jlink-setup/
-
-#define BUFSZ 101
-#define MAX_SZ (BUFSZ - 1)
-
 rrfw::Isr isr;
-
-// Mock out the Serial class so we can attempt to figure out what is going wrong.
-class MockSerial {
-public:
-  void begin(unsigned long baudRate) {
-    Serial.print("baudRate=");
-    Serial.println(baudRate);
-  }
-
-  void setData(uint8_t *data) {
-    _data = data;
-  }
-
-  size_t readBytesUntil(char terminator, uint8_t *buffer, size_t length) {
-    size_t sz = 0;
-    for (int i = 0; i < length; i++) {
-      if (_data[i] == terminator) {
-        break;
-      }
-      buffer[i] = _data[i];
-      sz++;
-    }
-    return sz;
-  }
-
-  size_t available() {
-    return sizeof(_data);
-  }
-
-private:
-  uint8_t *_data;
-};
-
-#define SERIAL_BUS mockSerial
-
-MockSerial mockSerial;
 uint8_t *_buf;
 void setup() {
   SerialUSB.begin(9600);
 
   _buf = reinterpret_cast<uint8_t *>(calloc(BUFSZ, sizeof(uint8_t)));
-}
-
- rrfw::RrOpStorage recieve() {
-  uint8_t *data;
-  size_t sz;
-  bzero(_buf, BUFSZ);
-  if (SERIAL_BUS.available()) {
-    sz = SERIAL_BUS.readBytesUntil('\n', _buf, BUFSZ);
-  } 
-
-  if (sz > MAX_SZ) {
-    uint8_t data[]{};
-    return rrfw::RrOpStorage(rrfw::RR_IO_RES_UNSUPPORTED, 0, data);
-  }
-  if (sz > 0) {
-    data = reinterpret_cast<uint8_t *>(calloc(sz, sizeof(uint8_t)));
-    memcpy(data, _buf, sz + 1);
-  }
-  return isr.deserialize(data, sz);
 }
 
 void loop() {
@@ -81,13 +23,12 @@ void loop() {
   testData[3] = '\n';
 
   SerialUSB.println("setting test data");
-  mockSerial.setData(testData);
+  SERIAL_BUS.setData(testData);
 
   SerialUSB.println("reading data");
-  const rrfw::RrOpStorage rx = recieve();
+  rrfw::RrOpStorage rx(rrfw::RR_IO_RES_NOTREADY, 0, {});
+  isr.recieve(rx);
   SerialUSB.println("data received");
-
-
 
   SerialUSB.print("CMD: ");
   SerialUSB.println(static_cast<int>(rx._cmd));
@@ -98,6 +39,20 @@ void loop() {
   SerialUSB.print("Data: '");
   SerialUSB.println("'");
   SerialUSB.println("finished");
+
+
+  // Test 2
+  testData[0] = '\n';
+  SERIAL_BUS.setData(testData);
+  size_t r = isr.recieve(rx);
+  SerialUSB.print("return data is:");
+  SerialUSB.println(r);
+
+  if (rx._cmd == rrfw::RR_IO_RES_NOTREADY) {
+    SerialUSB.println("test success!");
+  } else {
+    SerialUSB.println("failed!");
+  }
 
   while (1)
     ;

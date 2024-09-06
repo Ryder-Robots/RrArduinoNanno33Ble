@@ -36,8 +36,13 @@
 #ifndef SERIAL_BUS
 #define SERIAL_BUS SerialUSB
 #endif
+
+#define BUFSZ 101
+#define MAX_SZ (BUFSZ - 1)
+
+
 namespace rrfw {
-    #define BUFSZ 100
+
     
     class Isr {
     public:
@@ -76,8 +81,12 @@ namespace rrfw {
          * @fn recieve()
          * @brief recieves an inbound request. This function should only be called as part of the interrupt in INO sketch,
          * and not directly.
+         * 
+         * @param rx container for the result
+         * @return how many bytes where read in request.  Note that a result of 0 can also indicate
+         * an error which will be reflected in the rx.
          */
-        const RrOpStorage recieve();
+        const size_t recieve(RrOpStorage &rx);
 
     private:
         // Buffer for capturing datra.

@@ -100,19 +100,31 @@ namespace rrfw
         SERIAL_BUS.flush();
     }
 
-    const RrOpStorage Isr::recieve()
+    const size_t Isr::recieve(RrOpStorage &rx)
     {
+        uint8_t *data = NULL;
+        size_t sz = 0;
         bzero(_buf, BUFSZ);
-        size_t bytesR = 0;
-        if (SERIAL_BUS.available()) 
+        if (SERIAL_BUS.available())
         {
-            uint8_t c;
-            bytesR = SERIAL_BUS.readBytesUntil('\n', _buf, BUFSZ);
-            if (bytesR == 0) {
-                // BAD REQUEST
-            }
+            sz = SERIAL_BUS.readBytesUntil('\n', _buf, BUFSZ);
         }
 
-        return deserialize(_buf, bytesR);
+        // It's a bad request either too much data, or timeout.
+        // In both cases assume not ready
+        if (sz > MAX_SZ || sz < 2)
+        {
+            uint8_t data[]{};
+            rx = rrfw::RrOpStorage(RR_IO_RES_NOTREADY, 0, data);
+            return 0;
+        }
+
+        data = reinterpret_cast<uint8_t *>(calloc(sz, sizeof(uint8_t)));
+        memcpy(data, _buf, sz + 1);
+        rx = deserialize(data, sz);
+
+        // Free up the memory
+        free(data);
+        return sz;
     }
 }
