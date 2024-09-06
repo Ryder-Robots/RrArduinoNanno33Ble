@@ -32,8 +32,13 @@
 #include "RrCmd.h"
 #include "RrIsr.h"
 
+// By default SerialBUS will be set to SerialUSB,  but 
+#ifndef SERIAL_BUS
+#define SERIAL_BUS SerialUSB
+#endif
 namespace rrfw {
-    #define SERIAL_BUS SerialUSB
+    #define BUFSZ 100
+    
     class Isr {
     public:
 
@@ -73,6 +78,10 @@ namespace rrfw {
          * and not directly.
          */
         const RrOpStorage recieve();
+
+    private:
+        // Buffer for capturing datra.
+        uint8_t* _buf = reinterpret_cast<uint8_t *>(calloc(BUFSZ, sizeof(uint8_t)));
     };
 }
 

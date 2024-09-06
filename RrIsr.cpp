@@ -27,7 +27,7 @@ namespace rrfw
 {
     void Isr::begin(unsigned long boardRate)
     {
-        Serial.begin(boardRate);
+        SERIAL_BUS.begin(boardRate);
         while (!Serial)
             ;
     }
@@ -79,7 +79,7 @@ namespace rrfw
     const uint8_t *Isr::serialize(const RrOpStorage req)
     {
         uint8_t *data = reinterpret_cast<uint8_t *>(calloc(req._sz + 2, sizeof(uint8_t)));
-        data[0] = req._cmd;
+        data[0] = static_cast<uint8_t>(req._cmd);
         data[1] = req._sz;
 
         if (req._sz > 0)
@@ -98,5 +98,21 @@ namespace rrfw
         SERIAL_BUS.write(data, sz);
         SERIAL_BUS.println();
         SERIAL_BUS.flush();
+    }
+
+    const RrOpStorage Isr::recieve()
+    {
+        bzero(_buf, BUFSZ);
+        size_t bytesR = 0;
+        if (SERIAL_BUS.available()) 
+        {
+            uint8_t c;
+            bytesR = SERIAL_BUS.readBytesUntil('\n', _buf, BUFSZ);
+            if (bytesR == 0) {
+                // BAD REQUEST
+            }
+        }
+
+        return deserialize(_buf, bytesR);
     }
 }
