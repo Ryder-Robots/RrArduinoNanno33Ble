@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * =====================================================================
- * 
+ *
  * Base class fior actions that can be performed by chip.
  */
 
@@ -23,36 +23,33 @@
 #define TXRX_BASE_HPP
 
 #include <stdint.h>
+
 #include "RrCmd.h"
 #include "RrOpStorage.h"
 
 namespace rrfw {
 
-    class RrOpBase {
-    public:
-        /*!
-         * @fn execute
-         * @brief performs execute on the sensor, should be performed once available returns true.
-         * @return Storage class that contains data defined in sesnsors driver, otherwise RR_IO_RES_UNSUPORTED
-         */
-        virtual const RrOpStorage execute(const RrOpStorage  bytes) 
-        { 
-            uint8_t data[]{};
-            return RrOpStorage(RR_IO_RES_UNSUPPORTED, 0, data);
-        }
+class RrOpBase {
+   public:
+    /*!
+     * @fn execute
+     * @brief performs execute on the sensor, should be performed once available returns true.
+     * @return Storage class that contains data defined in sesnsors driver, otherwise RR_IO_RES_UNSUPORTED
+     */
+    virtual const RrOpStorage execute(const RrOpStorage bytes) {
+        uint8_t data[]{};
+        return RrOpStorage(RR_IO_RES_UNSUPPORTED, 0, data);
+    }
 
-        /*!
-         * @fn avialable
-         * @brief returns true when sensor becomes available.
-         * @return sensor implementation specific,  but usually bytes available.
-         */
-        virtual int available()
-        {
-            return 0;
-        }
+    /*!
+     * @fn avialable
+     * @brief returns true when sensor becomes available.
+     * @return sensor implementation specific,  but usually bytes available.
+     */
+    virtual int available() { return 0; }
 
-        virtual ~RrOpBase() {}
-    };
-}
+    virtual ~RrOpBase() {}
+};
+}  // namespace rrfw
 
-#endif
+#endif // TXRX_BASE_HPP

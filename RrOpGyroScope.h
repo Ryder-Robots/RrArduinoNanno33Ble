@@ -24,33 +24,47 @@
 
 #include "ImuBase.h"
 
-namespace rrfw
-{
-    class RrOpGyroScope : public ImuBase
-    {
-    public:
-        RrOpGyroScope(BoschSensorClass imu, Isr isr) : ImuBase(imu, isr) {}
-        
-        ~RrOpGyroScope() {}
+namespace rrfw {
+class RrOpGyroScope : public ImuBase {
+   public:
 
-        // Number of samples in the FIFO.
-        int available() override
-        {
-            return _imu.gyroscopeAvailable();
-        }
+    /*!
+     * @fn class deconstructor
+     */
+    RrOpGyroScope(BoschSensorClass imu, Isr isr) : ImuBase(imu, isr) {}
 
-        // Sampling rate of the sensor.
-        float sampleRate() override
-        {
-            return _imu.gyroscopeSampleRate();
-        }
+    /*!
+     * @fn available()
+     * @brief Number of samples in the FIFO.
+     * @return number of samples in FIFO
+     */
+    ~RrOpGyroScope() {}
 
-        // read from sensor
-        int read(float &x, float &y, float &z) override
-        {
-            return _imu.readGyroscope(x, y, z);
-        }
-    };
-}
 
-#endif
+    /*!
+     * @fn available()
+     * @brief Number of samples in the FIFO.
+     * @return number of samples in FIFO
+     */
+    int available() override { return _imu.gyroscopeAvailable(); }
+
+    /*!
+     * @fn sampleRate()
+     * @brief sampling rate in HZ for sensor
+     * @return sample rate
+     */
+    float sampleRate() override { return _imu.gyroscopeSampleRate(); }
+
+    /*!
+     * @fn read
+     * @brief populate X, Y, and Z coordinate for currently dertected magnetic field.
+     * @param x float to populate for X coordinate
+     * @param y float to populate for Y coordinate
+     * @param z float to populate for Z coordinate
+     * @return 
+     */
+    int read(float &x, float &y, float &z) override { return _imu.readGyroscope(x, y, z); }
+};
+}  // namespace rrfw
+
+#endif // RROPGYROSCOPE

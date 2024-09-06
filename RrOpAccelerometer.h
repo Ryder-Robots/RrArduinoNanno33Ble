@@ -24,33 +24,46 @@
 
 #include "ImuBase.h"
 
-namespace rrfw
-{
-    class RrOpAccelerometer : public ImuBase
-    {
-    public:
-        RrOpAccelerometer(BoschSensorClass imu, Isr isr) : ImuBase(imu, isr) {}
-        
-        ~RrOpAccelerometer() {}
+namespace rrfw {
+class RrOpAccelerometer : public ImuBase {
+   public:
+   /*!
+    * @fn RrOpAccelerometer
+    * @brief class constructor
+    * @param imu interface to BOSCH IMU
+    * @param isr interface to ISR
+    */
+    RrOpAccelerometer(BoschSensorClass imu, Isr isr) : ImuBase(imu, isr) {}
 
-        // Number of samples in the FIFO.
-        int available() override
-        {
-            return _imu.accelerationAvailable();
-        }
+    /*!
+     * @fn class deconstructor
+     */
+    ~RrOpAccelerometer() {}
 
-        // Sampling rate of the sensor.
-        float sampleRate() override
-        {
-            return _imu.accelerationSampleRate();
-        }
+    /*!
+     * @fn available()
+     * @brief Number of samples in the FIFO.
+     * @return number of samples in FIFO
+     */
+    int available() override { return _imu.accelerationAvailable(); }
 
-        // get values from sesnor
-        int read(float &x, float &y, float &z) override
-        {
-            return _imu.readAcceleration(x, y, z);
-        }
-    };
-}
+    /*!
+     * @fn sampleRate()
+     * @brief sampling rate in HZ for sensor
+     * @return sample rate
+     */
+    float sampleRate() override { return _imu.accelerationSampleRate(); }
 
-#endif
+    /*!
+     * @fn read
+     * @brief populate X, Y, and Z coordinate for currently dertected magnetic field.
+     * @param x float to populate for X coordinate
+     * @param y float to populate for Y coordinate
+     * @param z float to populate for Z coordinate
+     * @return 
+     */
+    int read(float &x, float &y, float &z) override { return _imu.readAcceleration(x, y, z); }
+};
+}  // namespace rrfw
+
+#endif //  RROPACCELEROMETER_H
